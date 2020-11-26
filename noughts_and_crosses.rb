@@ -3,6 +3,7 @@
 # noughts and crooses board game
 
 class Player
+  attr_reader :placement
   def initialize
     @@finished = false
     @@p1 = @@p2 = @@p3 = @@p4 = @@p5 = @@p6 = @@p7 = @@p8 = @@p9 = ' '
@@ -52,8 +53,8 @@ class Player
   end
 
   def winning_saying
-      puts "Congrats #{@name}, you've won big!!"
-      @@finished = true
+    puts "Congrats #{@name}, you've won big!!"
+    @@finished = true
   end
 
   def board
@@ -76,7 +77,7 @@ class Human < Player
 
   def place
     until @@possible_places.include? @placement
-      puts "\nPlace a number between 1-9? Type 'help me mi'lord' if you're unsure.\n\n"
+      puts "\n#{@name}, place a number between 1-9? Type 'help me mi'lord' if you're unsure.\n\n"
       @placement = gets.chomp.to_i
       while @@used_values.include? @placement
         puts "You cannot place onto a used tile."
@@ -84,8 +85,22 @@ class Human < Player
       end
       if @placement>0 && @placement<10
         @@used_values.push(@placement)
+        return @placement
+      else @placement== "help me mi'lord"
+        help
       end
     end
+  end
+
+  def help
+    puts "\nplace a cross by typing one of the tile's numbers"
+    puts "
+      1 | 2 | 3 
+    ---+---+---
+      4 | 5 | 6 
+    ---+---+---
+      7 | 8 | 9 
+    "
   end
 
   def turn
@@ -99,18 +114,20 @@ end
 class Comp < Player
   def initialize
     super()
-    @name = 'skynet'
+    @name = 'Skynet'
     @symbol = 'o'
+    @placement = nil
   end
 
   def rando_place
     until @@possible_places.include? @placement
-      puts "Skynet moves.."
+      puts "#{@name} moves.."
       @placement = rand(1..9)
       while @@used_values.include? @placement
         @placement = rand(1..9)
       end
       @@used_values.push(@placement)
+      return @placement
     end
   end
 
